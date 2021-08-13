@@ -104,7 +104,7 @@ class ElasticsearchclientApplicationTests {
     @Test
     void testAddDocument() throws IOException {
         // 1.创建对象
-        Corporation corporation = new Corporation("a","1000");
+        Corporation corporation = new Corporation("name1", "tyshxydm1", "fddbrxm1", "addr1", "1000");
 
         // 2.创建请求
         IndexRequest request = new IndexRequest("test_index1");
@@ -124,11 +124,11 @@ class ElasticsearchclientApplicationTests {
     // 查询文档信息
     @Test
     void testGetDocument() throws IOException {
-        GetRequest getRequest = new GetRequest("test_index1", "1");
+        GetRequest getRequest = new GetRequest("rkzhk.label", "60f6a41f60d5fe352b2865f9");
         GetResponse getResponse = client.get(getRequest, RequestOptions.DEFAULT);
 
         System.out.println(getResponse.getSourceAsString());
-        System.out.println(getResponse);
+        System.out.println(getResponse.getSourceAsMap());
     }
 
     // 更新文档信息
@@ -137,7 +137,7 @@ class ElasticsearchclientApplicationTests {
         UpdateRequest updateRequest = new UpdateRequest("test_index1", "1");
         updateRequest.timeout("1s");
 
-        Corporation corporation = new Corporation("b","1001");
+        Corporation corporation = new Corporation("name2", "tyshxydm2", "fddbrxm2", "addr2", "1001");
 
         updateRequest.doc(JSON.toJSONString(corporation), XContentType.JSON);
         UpdateResponse updateResponse = client.update(updateRequest, RequestOptions.DEFAULT);
@@ -162,10 +162,10 @@ class ElasticsearchclientApplicationTests {
         bulkRequest.timeout("10s");
 
         ArrayList<Corporation> userList = new ArrayList<>();
-        userList.add(new Corporation("aaa", "15"));
-        userList.add(new Corporation("bbb", "88"));
-        userList.add(new Corporation("ccc", "39"));
-        userList.add(new Corporation("ddd", "62"));
+        userList.add(new Corporation("name1", "tyshxydm1", "fddbrxm1", "addr1", "15"));
+        userList.add(new Corporation("name1", "tyshxydm1", "fddbrxm1", "addr1", "82"));
+        userList.add(new Corporation("name1", "tyshxydm1", "fddbrxm1", "addr1", "39"));
+        userList.add(new Corporation("name1", "tyshxydm1", "fddbrxm1", "addr1", "57"));
 
         for (int i = 0; i < userList.size(); i++) {
             bulkRequest.add(
@@ -187,12 +187,19 @@ class ElasticsearchclientApplicationTests {
         SearchRequest searchRequest = new SearchRequest("rkzhk.label");
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
 
-        MatchPhraseQueryBuilder matchPhraseQueryBuilder = QueryBuilders.matchPhraseQuery("name", "有限公司");
+        MatchPhraseQueryBuilder matchPhraseQueryBuilder = QueryBuilders.matchPhraseQuery("name", "国家石油天然气管网集团有限公司");
+
+        // ExistsQueryBuilder existsQueryBuilder = QueryBuilders.existsQuery("label.3bdc0616-441f-49a9-8d7f-a1231b57083a");
+
+        /*BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+        boolQueryBuilder.should(QueryBuilders.existsQuery("label.164b3c82-a534-4116-8884-464dd0cde4a3"))
+                .must(QueryBuilders.matchPhraseQuery("name", "北京路平发运输户"));*/
+
         sourceBuilder.query(matchPhraseQueryBuilder);
         sourceBuilder.sort("zczj", SortOrder.DESC);
         sourceBuilder.from(0);
         sourceBuilder.size(10);
-        sourceBuilder.fetchSource(new String[]{"name", "fddbrxm","zczj","kyrq"}, new String[]{});
+        sourceBuilder.fetchSource(new String[]{"name","label"}, new String[]{});
         sourceBuilder.timeout(new TimeValue(60, TimeUnit.SECONDS));
 
         searchRequest.source(sourceBuilder);

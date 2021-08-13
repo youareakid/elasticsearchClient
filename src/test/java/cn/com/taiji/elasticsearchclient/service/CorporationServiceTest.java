@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -17,9 +18,22 @@ public class CorporationServiceTest {
     CorporationService corporationService;
 
     @Test
-    void testListCorporation() throws IOException {
+    void testListCorporationByName() throws IOException {
 
-        List<Corporation> corporationList = corporationService.listCorporation("有限公司");
+        List<Corporation> corporationList = corporationService.listCorporationByName("有限公司", 0, 10);
+
+        log.info("返回数据: ===>{}", corporationList);
+    }
+
+    @Test
+    void testListCorporationByLabelId() throws IOException {
+
+        ArrayList<String> labelIdList = new ArrayList<>();
+        // labelIdList.add("164b3c82-a534-4116-8884-464dd0cde4a3");
+        // labelIdList.add("3bdc0616-441f-49a9-8d7f-a1231b57083a");
+        labelIdList.add("e72f9892-c1db-42a3-bcc1-bd8c9f3d86ae");
+
+        List<Corporation> corporationList = corporationService.listCorporationByLabelId(labelIdList, 0, 10);
 
         log.info("返回数据: ===>{}", corporationList);
     }

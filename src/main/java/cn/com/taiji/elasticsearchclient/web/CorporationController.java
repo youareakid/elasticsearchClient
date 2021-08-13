@@ -5,12 +5,10 @@ import cn.com.taiji.elasticsearchclient.dto.ResultDTO;
 import cn.com.taiji.elasticsearchclient.service.CorporationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -22,9 +20,18 @@ public class CorporationController {
 
     @GetMapping(value = "/search-by-name")
     @ResponseBody
-    public ResultDTO<List<Corporation>> searchByName(@RequestParam String name) throws IOException {
+    public ResultDTO<List<Corporation>> searchByName(@RequestParam String name, Integer pageNum, Integer pageSize) throws IOException {
 
-        List<Corporation> corporationList = corporationService.listCorporation(name);
+        List<Corporation> corporationList = corporationService.listCorporationByName(name, pageNum, pageSize);
+        return new ResultDTO(corporationList);
+
+    }
+
+    @GetMapping(value = "/search-by-labelId")
+    @ResponseBody
+    public ResultDTO<List<Corporation>> searchByLabelId(@RequestParam ArrayList<String> labelIdList, Integer pageNum, Integer pageSize) throws IOException {
+
+        List<Corporation> corporationList = corporationService.listCorporationByLabelId(labelIdList, pageNum, pageSize);
         return new ResultDTO(corporationList);
 
     }

@@ -15,6 +15,13 @@ import java.io.Serializable;
 public class Corporation implements Serializable {
 
     private String name;
+
+    private String tyshxydm;
+
+    private String fddbrxm;
+
+    private String zcdz;
+    
     private String zczj;
 
 }

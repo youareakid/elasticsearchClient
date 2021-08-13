@@ -8,6 +8,7 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchPhraseQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
@@ -32,7 +33,8 @@ public class CorporationService {
     @Qualifier("restHighLevelClient")
     private RestHighLevelClient client;
 
-    public List<Corporation> listCorporation(String name) throws IOException {
+    public List<Corporation> listCorporationByName(String name, Integer pageNum, Integer pageSize) throws IOException {
+
         SearchRequest searchRequest = new SearchRequest("rkzhk.label");
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
 
@@ -40,8 +42,8 @@ public class CorporationService {
         sourceBuilder.query(matchPhraseQueryBuilder);
         sourceBuilder.timeout(new TimeValue(60, TimeUnit.SECONDS));
         // sourceBuilder.fetchSource(new String[]{"id", "name", "fddbrxm", "zczj", "kyrq"}, new String[]{});
-        sourceBuilder.from(0);
-        sourceBuilder.size(10);
+        sourceBuilder.from(pageNum);
+        sourceBuilder.size(pageSize);
         sourceBuilder.sort("zczj", SortOrder.DESC);
 
         searchRequest.source(sourceBuilder);
@@ -56,6 +58,51 @@ public class CorporationService {
         for (SearchHit searchHit : searchHits) {
             Corporation corporation = new Corporation(
                     String.valueOf(searchHit.getSourceAsMap().get("name")),
+                    String.valueOf(searchHit.getSourceAsMap().get("tyshxydm")),
+                    String.valueOf(searchHit.getSourceAsMap().get("fddbrxm")),
+                    String.valueOf(searchHit.getSourceAsMap().get("zcdz")),
+                    String.valueOf(searchHit.getSourceAsMap().get("zczj"))
+            );
+            corporationList.add(corporation);
+        }
+
+        return corporationList;
+    }
+
+    public List<Corporation> listCorporationByLabelId(ArrayList<String> labelIdList, Integer pageNum, Integer pageSize) throws IOException {
+
+        SearchRequest searchRequest = new SearchRequest("rkzhk.label");
+        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+
+        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+
+        for (String labelId : labelIdList) {
+            String str = "label." + labelId;
+            boolQueryBuilder.should(QueryBuilders.existsQuery(str));
+        }
+
+        sourceBuilder.query(boolQueryBuilder);
+        sourceBuilder.timeout(new TimeValue(60, TimeUnit.SECONDS));
+        // sourceBuilder.fetchSource(new String[]{"id", "name", "fddbrxm", "zczj", "kyrq"}, new String[]{});
+        sourceBuilder.from(pageNum);
+        sourceBuilder.size(pageSize);
+        sourceBuilder.sort("zczj", SortOrder.DESC);
+
+        searchRequest.source(sourceBuilder);
+        SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
+
+        // 搜索结果
+        SearchHits hits = searchResponse.getHits();
+        SearchHit[] searchHits = hits.getHits();
+        // 匹配到的总记录数
+        TotalHits totalHits = hits.getTotalHits();
+        List<Corporation> corporationList = new ArrayList<>();
+        for (SearchHit searchHit : searchHits) {
+            Corporation corporation = new Corporation(
+                    String.valueOf(searchHit.getSourceAsMap().get("name")),
+                    String.valueOf(searchHit.getSourceAsMap().get("tyshxydm")),
+                    String.valueOf(searchHit.getSourceAsMap().get("fddbrxm")),
+                    String.valueOf(searchHit.getSourceAsMap().get("zcdz")),
                     String.valueOf(searchHit.getSourceAsMap().get("zczj"))
             );
             corporationList.add(corporation);
