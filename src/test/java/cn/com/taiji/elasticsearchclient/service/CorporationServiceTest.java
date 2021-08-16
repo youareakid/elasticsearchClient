@@ -1,6 +1,7 @@
 package cn.com.taiji.elasticsearchclient.service;
 
 import cn.com.taiji.elasticsearchclient.domain.Corporation;
+import cn.com.taiji.elasticsearchclient.dto.CorporationDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +21,9 @@ public class CorporationServiceTest {
     @Test
     void testListCorporationByName() throws IOException {
 
-        List<Corporation> corporationList = corporationService.listCorporationByName("有限公司", 0, 10);
+        CorporationDTO corporationDTO = corporationService.listCorporationByName("有限公司", 0, 10);
 
-        log.info("返回数据: ===>{}", corporationList);
+        log.info("返回数据: ===>{}", corporationDTO);
     }
 
     @Test
@@ -33,9 +34,9 @@ public class CorporationServiceTest {
         // labelIdList.add("3bdc0616-441f-49a9-8d7f-a1231b57083a");
         labelIdList.add("e72f9892-c1db-42a3-bcc1-bd8c9f3d86ae");
 
-        List<Corporation> corporationList = corporationService.listCorporationByLabelId(labelIdList, 0, 10);
+        CorporationDTO corporationDTO = corporationService.listCorporationByLabelId(labelIdList, 0, 10);
 
-        log.info("返回数据: ===>{}", corporationList);
+        log.info("返回数据: ===>{}", corporationDTO);
     }
 
 }

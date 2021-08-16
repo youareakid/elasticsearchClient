@@ -1,6 +1,7 @@
 package cn.com.taiji.elasticsearchclient.service;
 
 import cn.com.taiji.elasticsearchclient.domain.Corporation;
+import cn.com.taiji.elasticsearchclient.dto.CorporationDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.TotalHits;
 import org.elasticsearch.action.search.SearchRequest;
@@ -33,7 +34,7 @@ public class CorporationService {
     @Qualifier("restHighLevelClient")
     private RestHighLevelClient client;
 
-    public List<Corporation> listCorporationByName(String name, Integer pageNum, Integer pageSize) throws IOException {
+    public CorporationDTO listCorporationByName(String name, Integer pageNum, Integer pageSize) throws IOException {
 
         SearchRequest searchRequest = new SearchRequest("rkzhk.label");
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
@@ -54,6 +55,10 @@ public class CorporationService {
         SearchHit[] searchHits = hits.getHits();
         // 匹配到的总记录数
         TotalHits totalHits = hits.getTotalHits();
+        Long totalNum = totalHits.value;
+        // 匹配到的总页数
+        double totalPage = Math.ceil(totalNum * 1.0 / pageSize);
+
         List<Corporation> corporationList = new ArrayList<>();
         for (SearchHit searchHit : searchHits) {
             Corporation corporation = new Corporation(
@@ -66,10 +71,12 @@ public class CorporationService {
             corporationList.add(corporation);
         }
 
-        return corporationList;
+        return CorporationDTO.builder()
+                .corporationList(corporationList).totalNum(totalNum).totalPage(totalPage)
+                .build();
     }
 
-    public List<Corporation> listCorporationByLabelId(ArrayList<String> labelIdList, Integer pageNum, Integer pageSize) throws IOException {
+    public CorporationDTO listCorporationByLabelId(ArrayList<String> labelIdList, Integer pageNum, Integer pageSize) throws IOException {
 
         SearchRequest searchRequest = new SearchRequest("rkzhk.label");
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
@@ -96,6 +103,10 @@ public class CorporationService {
         SearchHit[] searchHits = hits.getHits();
         // 匹配到的总记录数
         TotalHits totalHits = hits.getTotalHits();
+        Long totalNum = totalHits.value;
+        // 匹配到的总页数
+        double totalPage = Math.ceil(totalNum * 1.0 / pageSize);
+
         List<Corporation> corporationList = new ArrayList<>();
         for (SearchHit searchHit : searchHits) {
             Corporation corporation = new Corporation(
@@ -108,7 +119,9 @@ public class CorporationService {
             corporationList.add(corporation);
         }
 
-        return corporationList;
+        return CorporationDTO.builder()
+                .corporationList(corporationList).totalNum(totalNum).totalPage(totalPage)
+                .build();
     }
 
 }
