@@ -20,6 +20,6 @@ public class CorporationDTO implements Serializable {
 
     private Long totalNum;
 
-    private double totalPage;
+    private Integer totalPage;
 
 }
