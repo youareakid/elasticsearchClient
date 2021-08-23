@@ -21,7 +21,7 @@ public class CorporationServiceTest {
     @Test
     void testListCorporationByName() throws IOException {
 
-        CorporationDTO corporationDTO = corporationService.listCorporationByName("有限公司", 0, 10);
+        CorporationDTO corporationDTO = corporationService.listCorporationByName("衣雅优", 0, 10);
 
         log.info("返回数据: ===>{}", corporationDTO);
     }

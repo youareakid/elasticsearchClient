@@ -68,6 +68,24 @@ public class CorporationService {
                     String.valueOf(searchHit.getSourceAsMap().get("zcdz")),
                     String.valueOf(searchHit.getSourceAsMap().get("zczj"))
             );
+
+            // null 字符串判断
+            if (corporation.getName() == "null") {
+                corporation.setName("");
+            }
+            if (corporation.getTyshxydm() == "null") {
+                corporation.setTyshxydm("");
+            }
+            if (corporation.getFddbrxm() == "null") {
+                corporation.setFddbrxm("");
+            }
+            if (corporation.getZcdz() == "null") {
+                corporation.setZcdz("");
+            }
+            if (corporation.getZczj() == "null") {
+                corporation.setZczj("");
+            }
+
             corporationList.add(corporation);
         }
 
@@ -116,6 +134,24 @@ public class CorporationService {
                     String.valueOf(searchHit.getSourceAsMap().get("zcdz")),
                     String.valueOf(searchHit.getSourceAsMap().get("zczj"))
             );
+
+            // null 字符串判断
+            if (corporation.getName() == "null") {
+                corporation.setName("");
+            }
+            if (corporation.getTyshxydm() == "null") {
+                corporation.setTyshxydm("");
+            }
+            if (corporation.getFddbrxm() == "null") {
+                corporation.setFddbrxm("");
+            }
+            if (corporation.getZcdz() == "null") {
+                corporation.setZcdz("");
+            }
+            if (corporation.getZczj() == "null") {
+                corporation.setZczj("");
+            }
+
             corporationList.add(corporation);
         }
 

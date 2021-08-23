@@ -28,6 +28,8 @@ import org.elasticsearch.index.query.*;
 import org.elasticsearch.search.Scroll;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.metrics.StatsAggregationBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.FetchSourceContext;
 import org.elasticsearch.search.sort.SortOrder;
@@ -100,6 +102,18 @@ class ElasticsearchclientApplicationTests {
         System.out.println(exists);
     }
 
+    // 查询索引中文档总数
+    @Test
+    void testCountDocument() throws IOException {
+        SearchRequest searchRequest = new SearchRequest("runoob.collect1");
+
+        SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
+        TotalHits totalHits = searchResponse.getHits().getTotalHits();
+
+        System.out.println("total: " + totalHits);
+    }
+
+
     // 添加文档
     @Test
     void testAddDocument() throws IOException {
@@ -162,14 +176,14 @@ class ElasticsearchclientApplicationTests {
         bulkRequest.timeout("10s");
 
         ArrayList<Corporation> userList = new ArrayList<>();
-        userList.add(new Corporation("name1", "tyshxydm1", "fddbrxm1", "addr1", "15"));
-        userList.add(new Corporation("name1", "tyshxydm1", "fddbrxm1", "addr1", "82"));
-        userList.add(new Corporation("name1", "tyshxydm1", "fddbrxm1", "addr1", "39"));
-        userList.add(new Corporation("name1", "tyshxydm1", "fddbrxm1", "addr1", "57"));
+        userList.add(new Corporation("太极计算机股份有限公司", "tyshxydm1", "fddbrxm1", "addr1", "15"));
+        userList.add(new Corporation("太极计算机股份有限公司工会", "tyshxydm1", "fddbrxm1", "addr1", "82"));
+        userList.add(new Corporation("北京市海淀区太极计算机培训中心", "tyshxydm1", "fddbrxm1", "addr1", "39"));
+        // userList.add(new Corporation("name1", "tyshxydm1", "fddbrxm1", "addr1", "57"));
 
         for (int i = 0; i < userList.size(); i++) {
             bulkRequest.add(
-                    new IndexRequest("test_index1")
+                    new IndexRequest("rkzhk.label")
                             .id("" + (i + 6))
                             .source(JSON.toJSONString(userList.get(i)), XContentType.JSON)
             );
@@ -187,7 +201,7 @@ class ElasticsearchclientApplicationTests {
         SearchRequest searchRequest = new SearchRequest("rkzhk.label");
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
 
-        MatchPhraseQueryBuilder matchPhraseQueryBuilder = QueryBuilders.matchPhraseQuery("name", "国家石油天然气管网集团有限公司");
+        MatchPhraseQueryBuilder matchPhraseQueryBuilder = QueryBuilders.matchPhraseQuery("name", "衣雅优");
 
         // ExistsQueryBuilder existsQueryBuilder = QueryBuilders.existsQuery("label.3bdc0616-441f-49a9-8d7f-a1231b57083a");
 
@@ -199,7 +213,7 @@ class ElasticsearchclientApplicationTests {
         sourceBuilder.sort("zczj", SortOrder.DESC);
         sourceBuilder.from(0);
         sourceBuilder.size(10);
-        sourceBuilder.fetchSource(new String[]{"name","label"}, new String[]{});
+        // sourceBuilder.fetchSource(new String[]{"name", "label"}, new String[]{});
         sourceBuilder.timeout(new TimeValue(60, TimeUnit.SECONDS));
 
         searchRequest.source(sourceBuilder);
@@ -214,7 +228,35 @@ class ElasticsearchclientApplicationTests {
         log.info("查询总数: " + totalHits);
         System.out.println("查询结果:");
         for (SearchHit searchHit : searchHits) {
-            System.out.println(searchHit.getSourceAsMap());
+            // System.out.println(searchHit.getSourceAsMap());
+
+            Corporation corporation = new Corporation(
+                    String.valueOf(searchHit.getSourceAsMap().get("name")),
+                    String.valueOf(searchHit.getSourceAsMap().get("tyshxydm")),
+                    String.valueOf(searchHit.getSourceAsMap().get("fddbrxm")),
+                    String.valueOf(searchHit.getSourceAsMap().get("zcdz")),
+                    String.valueOf(searchHit.getSourceAsMap().get("zczj"))
+            );
+
+            System.out.println(corporation);
+
+            if(corporation.getName() == "null"){
+                corporation.setName("");
+            }
+            if(corporation.getTyshxydm() == "null"){
+                corporation.setTyshxydm("");
+            }
+            if(corporation.getFddbrxm() == "null"){
+                corporation.setFddbrxm("");
+            }
+            if(corporation.getZcdz() == "null"){
+                corporation.setZcdz("");
+            }
+            if(corporation.getZczj() == "null"){
+                corporation.setZczj("");
+            }
+
+            System.out.println(corporation);
         }
 
     }
