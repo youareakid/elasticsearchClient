@@ -62,6 +62,7 @@ public class CorporationService {
         List<Corporation> corporationList = new ArrayList<>();
         for (SearchHit searchHit : searchHits) {
             Corporation corporation = new Corporation(
+                    String.valueOf(searchHit.getId()),
                     String.valueOf(searchHit.getSourceAsMap().get("name")),
                     String.valueOf(searchHit.getSourceAsMap().get("tyshxydm")),
                     String.valueOf(searchHit.getSourceAsMap().get("fddbrxm")),
@@ -70,6 +71,9 @@ public class CorporationService {
             );
 
             // null 字符串判断
+            if (corporation.getId() == "null") {
+                corporation.setId("");
+            }
             if (corporation.getName() == "null") {
                 corporation.setName("");
             }
@@ -128,6 +132,7 @@ public class CorporationService {
         List<Corporation> corporationList = new ArrayList<>();
         for (SearchHit searchHit : searchHits) {
             Corporation corporation = new Corporation(
+                    String.valueOf(searchHit.getId()),
                     String.valueOf(searchHit.getSourceAsMap().get("name")),
                     String.valueOf(searchHit.getSourceAsMap().get("tyshxydm")),
                     String.valueOf(searchHit.getSourceAsMap().get("fddbrxm")),
@@ -136,6 +141,9 @@ public class CorporationService {
             );
 
             // null 字符串判断
+            if (corporation.getId() == "null") {
+                corporation.setId("");
+            }
             if (corporation.getName() == "null") {
                 corporation.setName("");
             }
@@ -193,6 +201,7 @@ public class CorporationService {
         List<Corporation> corporationList = new ArrayList<>();
         for (SearchHit searchHit : searchHits) {
             Corporation corporation = new Corporation(
+                    String.valueOf(searchHit.getId()),
                     String.valueOf(searchHit.getSourceAsMap().get("name")),
                     String.valueOf(searchHit.getSourceAsMap().get("tyshxydm")),
                     String.valueOf(searchHit.getSourceAsMap().get("fddbrxm")),
@@ -201,6 +210,9 @@ public class CorporationService {
             );
 
             // null 字符串判断
+            if (corporation.getId() == "null") {
+                corporation.setId("");
+            }
             if (corporation.getName() == "null") {
                 corporation.setName("");
             }

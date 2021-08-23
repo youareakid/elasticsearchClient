@@ -14,6 +14,8 @@ import java.io.Serializable;
 // @Document(indexName = "rkzhk.label")
 public class Corporation implements Serializable {
 
+    private String id;
+
     private String name;
 
     private String tyshxydm;

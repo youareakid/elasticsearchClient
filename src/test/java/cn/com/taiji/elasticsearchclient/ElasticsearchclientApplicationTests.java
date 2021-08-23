@@ -37,6 +37,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.apache.commons.lang.RandomStringUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -117,12 +118,14 @@ class ElasticsearchclientApplicationTests {
     // 添加文档
     @Test
     void testAddDocument() throws IOException {
+        String id = RandomStringUtils.randomAlphanumeric(24);
+
         // 1.创建对象
-        Corporation corporation = new Corporation("name1", "tyshxydm1", "fddbrxm1", "addr1", "1000");
+        Corporation corporation = new Corporation(id, "name2", "tyshxydm2", "fddbrxm2", "zcdz2", "1050");
 
         // 2.创建请求
-        IndexRequest request = new IndexRequest("test_index1");
-        request.id("1");
+        IndexRequest request = new IndexRequest("rkzhk.label");
+        request.id(id);
         request.timeout(TimeValue.timeValueSeconds(1));
 
         // 3.将数据放入请求 json
@@ -148,10 +151,10 @@ class ElasticsearchclientApplicationTests {
     // 更新文档信息
     @Test
     void testUpdateDocument() throws IOException {
-        UpdateRequest updateRequest = new UpdateRequest("test_index1", "1");
+        UpdateRequest updateRequest = new UpdateRequest("rkzhk.label", "60f6a41f60d5fe352b2865ae");
         updateRequest.timeout("1s");
 
-        Corporation corporation = new Corporation("name2", "tyshxydm2", "fddbrxm2", "addr2", "1001");
+        Corporation corporation = new Corporation("60f6a41f60d5fe352b2865ae", "name3", "tyshxydm3", "fddbrxm3", "zcdz3", "1001");
 
         updateRequest.doc(JSON.toJSONString(corporation), XContentType.JSON);
         UpdateResponse updateResponse = client.update(updateRequest, RequestOptions.DEFAULT);
@@ -175,11 +178,14 @@ class ElasticsearchclientApplicationTests {
         BulkRequest bulkRequest = new BulkRequest();
         bulkRequest.timeout("10s");
 
+        String id1 = RandomStringUtils.randomAlphanumeric(24);
+        String id2 = RandomStringUtils.randomAlphanumeric(24);
+        String id3 = RandomStringUtils.randomAlphanumeric(24);
+
         ArrayList<Corporation> userList = new ArrayList<>();
-        userList.add(new Corporation("太极计算机股份有限公司", "tyshxydm1", "fddbrxm1", "addr1", "15"));
-        userList.add(new Corporation("太极计算机股份有限公司工会", "tyshxydm1", "fddbrxm1", "addr1", "82"));
-        userList.add(new Corporation("北京市海淀区太极计算机培训中心", "tyshxydm1", "fddbrxm1", "addr1", "39"));
-        // userList.add(new Corporation("name1", "tyshxydm1", "fddbrxm1", "addr1", "57"));
+        userList.add(new Corporation(id1, "太极计算机股份有限公司", "tyshxydm1", "fddbrxm1", "addr1", "15"));
+        userList.add(new Corporation(id2, "太极计算机股份有限公司工会", "tyshxydm1", "fddbrxm1", "addr1", "82"));
+        userList.add(new Corporation(id3, "北京市海淀区太极计算机培训中心", "tyshxydm1", "fddbrxm1", "addr1", "39"));
 
         for (int i = 0; i < userList.size(); i++) {
             bulkRequest.add(
@@ -231,6 +237,7 @@ class ElasticsearchclientApplicationTests {
             // System.out.println(searchHit.getSourceAsMap());
 
             Corporation corporation = new Corporation(
+                    String.valueOf(searchHit.getId()),
                     String.valueOf(searchHit.getSourceAsMap().get("name")),
                     String.valueOf(searchHit.getSourceAsMap().get("tyshxydm")),
                     String.valueOf(searchHit.getSourceAsMap().get("fddbrxm")),
@@ -238,21 +245,22 @@ class ElasticsearchclientApplicationTests {
                     String.valueOf(searchHit.getSourceAsMap().get("zczj"))
             );
 
-            System.out.println(corporation);
-
-            if(corporation.getName() == "null"){
+            if (corporation.getId() == "null") {
+                corporation.setId("");
+            }
+            if (corporation.getName() == "null") {
                 corporation.setName("");
             }
-            if(corporation.getTyshxydm() == "null"){
+            if (corporation.getTyshxydm() == "null") {
                 corporation.setTyshxydm("");
             }
-            if(corporation.getFddbrxm() == "null"){
+            if (corporation.getFddbrxm() == "null") {
                 corporation.setFddbrxm("");
             }
-            if(corporation.getZcdz() == "null"){
+            if (corporation.getZcdz() == "null") {
                 corporation.setZcdz("");
             }
-            if(corporation.getZczj() == "null"){
+            if (corporation.getZczj() == "null") {
                 corporation.setZczj("");
             }
 

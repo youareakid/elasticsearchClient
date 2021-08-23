@@ -42,7 +42,7 @@ public class CorporationServiceTest {
     @Test
     void testListCorporationByDataMasking() throws IOException {
 
-        CorporationDTO corporationDTO = corporationService.listCorporationByDataMasking("计算机", 0, 0, 10);
+        CorporationDTO corporationDTO = corporationService.listCorporationByDataMasking("计算机", 1, 0, 10);
 
         log.info("返回数据: ===>{}", corporationDTO);
     }
