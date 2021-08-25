@@ -110,7 +110,7 @@ public class CorporationService {
 
         for (String labelId : labelIdList) {
             String str = "label." + labelId;
-            boolQueryBuilder.should(QueryBuilders.existsQuery(str));
+            boolQueryBuilder.must(QueryBuilders.existsQuery(str));
         }
 
         sourceBuilder.query(boolQueryBuilder);
