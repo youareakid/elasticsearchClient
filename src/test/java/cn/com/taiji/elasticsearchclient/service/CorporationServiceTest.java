@@ -21,7 +21,7 @@ public class CorporationServiceTest {
     @Test
     void testListCorporationByName() throws IOException {
 
-        CorporationDTO corporationDTO = corporationService.listCorporationByName("计算机", 0, 10);
+        CorporationDTO corporationDTO = corporationService.listCorporationByName("name2", 0, 10);
 
         log.info("返回数据: ===>{}", corporationDTO);
     }
@@ -31,8 +31,8 @@ public class CorporationServiceTest {
 
         ArrayList<String> labelIdList = new ArrayList<>();
         // labelIdList.add("164b3c82-a534-4116-8884-464dd0cde4a3");
-        // labelIdList.add("3bdc0616-441f-49a9-8d7f-a1231b57083a");
-        labelIdList.add("e72f9892-c1db-42a3-bcc1-bd8c9f3d86ae");
+        labelIdList.add("3bdc0616-441f-49a9-8d7f-a1231b57083a");
+        // labelIdList.add("e72f9892-c1db-42a3-bcc1-bd8c9f3d86ae");
 
         CorporationDTO corporationDTO = corporationService.listCorporationByLabelId(labelIdList, 0, 10);
 
@@ -42,7 +42,7 @@ public class CorporationServiceTest {
     @Test
     void testListCorporationByDataMasking() throws IOException {
 
-        CorporationDTO corporationDTO = corporationService.listCorporationByDataMasking("计算机", 1, 0, 10);
+        CorporationDTO corporationDTO = corporationService.listCorporationByDataMasking("name2", 1, 0, 10);
 
         log.info("返回数据: ===>{}", corporationDTO);
     }

@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -61,13 +62,15 @@ public class CorporationService {
 
         List<Corporation> corporationList = new ArrayList<>();
         for (SearchHit searchHit : searchHits) {
+            BigDecimal zczj = new BigDecimal(String.valueOf(searchHit.getSourceAsMap().get("zczj")));
+
             Corporation corporation = new Corporation(
                     String.valueOf(searchHit.getId()),
                     String.valueOf(searchHit.getSourceAsMap().get("name")),
                     String.valueOf(searchHit.getSourceAsMap().get("tyshxydm")),
                     String.valueOf(searchHit.getSourceAsMap().get("fddbrxm")),
                     String.valueOf(searchHit.getSourceAsMap().get("zcdz")),
-                    String.valueOf(searchHit.getSourceAsMap().get("zczj"))
+                    zczj.toString()
             );
 
             // null 字符串判断
@@ -131,13 +134,15 @@ public class CorporationService {
 
         List<Corporation> corporationList = new ArrayList<>();
         for (SearchHit searchHit : searchHits) {
+            BigDecimal zczj = new BigDecimal(String.valueOf(searchHit.getSourceAsMap().get("zczj")));
+
             Corporation corporation = new Corporation(
                     String.valueOf(searchHit.getId()),
                     String.valueOf(searchHit.getSourceAsMap().get("name")),
                     String.valueOf(searchHit.getSourceAsMap().get("tyshxydm")),
                     String.valueOf(searchHit.getSourceAsMap().get("fddbrxm")),
                     String.valueOf(searchHit.getSourceAsMap().get("zcdz")),
-                    String.valueOf(searchHit.getSourceAsMap().get("zczj"))
+                    zczj.toString()
             );
 
             // null 字符串判断
@@ -200,13 +205,15 @@ public class CorporationService {
 
         List<Corporation> corporationList = new ArrayList<>();
         for (SearchHit searchHit : searchHits) {
+            BigDecimal zczj = new BigDecimal(String.valueOf(searchHit.getSourceAsMap().get("zczj")));
+
             Corporation corporation = new Corporation(
                     String.valueOf(searchHit.getId()),
                     String.valueOf(searchHit.getSourceAsMap().get("name")),
                     String.valueOf(searchHit.getSourceAsMap().get("tyshxydm")),
                     String.valueOf(searchHit.getSourceAsMap().get("fddbrxm")),
                     String.valueOf(searchHit.getSourceAsMap().get("zcdz")),
-                    String.valueOf(searchHit.getSourceAsMap().get("zczj"))
+                    zczj.toString()
             );
 
             // null 字符串判断

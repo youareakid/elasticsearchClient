@@ -1,6 +1,7 @@
 package cn.com.taiji.elasticsearchclient;
 
 import cn.com.taiji.elasticsearchclient.domain.Corporation;
+import cn.com.taiji.elasticsearchclient.domain.TestCase;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.TotalHits;
@@ -28,8 +29,6 @@ import org.elasticsearch.index.query.*;
 import org.elasticsearch.search.Scroll;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
-import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.metrics.StatsAggregationBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.FetchSourceContext;
 import org.elasticsearch.search.sort.SortOrder;
@@ -40,6 +39,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.apache.commons.lang.RandomStringUtils;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -118,10 +118,11 @@ class ElasticsearchclientApplicationTests {
     // 添加文档
     @Test
     void testAddDocument() throws IOException {
+        // 生成随机24位id
         String id = RandomStringUtils.randomAlphanumeric(24);
 
         // 1.创建对象
-        Corporation corporation = new Corporation(id, "name2", "tyshxydm2", "fddbrxm2", "zcdz2", "1050");
+        TestCase testCase = new TestCase("name2", "tyshxydm2", "fddbrxm2", "zcdz2", 238893004.595);
 
         // 2.创建请求
         IndexRequest request = new IndexRequest("rkzhk.label");
@@ -129,7 +130,7 @@ class ElasticsearchclientApplicationTests {
         request.timeout(TimeValue.timeValueSeconds(1));
 
         // 3.将数据放入请求 json
-        request.source(JSON.toJSONString(corporation), XContentType.JSON);
+        request.source(JSON.toJSONString(testCase), XContentType.JSON);
 
         // 4.客户端发送请求,获取响应结果
         IndexResponse indexResponse = client.index(request, RequestOptions.DEFAULT);
@@ -151,12 +152,11 @@ class ElasticsearchclientApplicationTests {
     // 更新文档信息
     @Test
     void testUpdateDocument() throws IOException {
-        UpdateRequest updateRequest = new UpdateRequest("rkzhk.label", "60f6a41f60d5fe352b2865ae");
+        UpdateRequest updateRequest = new UpdateRequest("rkzhk.label", "Tq6ImC2tPDppiCUC1HZA07Qb");
         updateRequest.timeout("1s");
 
-        Corporation corporation = new Corporation("60f6a41f60d5fe352b2865ae", "name3", "tyshxydm3", "fddbrxm3", "zcdz3", "1001");
-
-        updateRequest.doc(JSON.toJSONString(corporation), XContentType.JSON);
+        TestCase testCase = new TestCase("name1", "tyshxydm1", "fddbrxm1", "zcdz1", 13209466.115);
+        updateRequest.doc(JSON.toJSONString(testCase), XContentType.JSON);
         UpdateResponse updateResponse = client.update(updateRequest, RequestOptions.DEFAULT);
 
         System.out.println(updateResponse.status());
@@ -165,7 +165,7 @@ class ElasticsearchclientApplicationTests {
     // 删除文档信息
     @Test
     void testDeleteDocument() throws IOException {
-        DeleteRequest request = new DeleteRequest("test_index1", "1");
+        DeleteRequest request = new DeleteRequest("rkzhk.label", "CphpPv2bmmDYJifQBxUjZssQ");
         request.timeout("1s");
         DeleteResponse deleteResponse = client.delete(request, RequestOptions.DEFAULT);
 
@@ -178,19 +178,18 @@ class ElasticsearchclientApplicationTests {
         BulkRequest bulkRequest = new BulkRequest();
         bulkRequest.timeout("10s");
 
-        String id1 = RandomStringUtils.randomAlphanumeric(24);
-        String id2 = RandomStringUtils.randomAlphanumeric(24);
-        String id3 = RandomStringUtils.randomAlphanumeric(24);
+        ArrayList<String> idList = new ArrayList<>();
+        idList.add(RandomStringUtils.randomAlphanumeric(24));
+        idList.add(RandomStringUtils.randomAlphanumeric(24));
 
-        ArrayList<Corporation> userList = new ArrayList<>();
-        userList.add(new Corporation(id1, "太极计算机股份有限公司", "tyshxydm1", "fddbrxm1", "addr1", "15"));
-        userList.add(new Corporation(id2, "太极计算机股份有限公司工会", "tyshxydm1", "fddbrxm1", "addr1", "82"));
-        userList.add(new Corporation(id3, "北京市海淀区太极计算机培训中心", "tyshxydm1", "fddbrxm1", "addr1", "39"));
+        ArrayList<TestCase> userList = new ArrayList<>();
+        userList.add(new TestCase("name2", "tyshxydm2", "fddbrxm2", "addr2", 238893004.595));
+        userList.add(new TestCase("name3", "tyshxydm3", "fddbrxm3", "addr3", 3560000.0));
 
         for (int i = 0; i < userList.size(); i++) {
             bulkRequest.add(
                     new IndexRequest("rkzhk.label")
-                            .id("" + (i + 6))
+                            .id(idList.get(i))
                             .source(JSON.toJSONString(userList.get(i)), XContentType.JSON)
             );
         }
@@ -207,8 +206,9 @@ class ElasticsearchclientApplicationTests {
         SearchRequest searchRequest = new SearchRequest("rkzhk.label");
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
 
-        MatchPhraseQueryBuilder matchPhraseQueryBuilder = QueryBuilders.matchPhraseQuery("name", "衣雅优");
+        MatchPhraseQueryBuilder matchPhraseQueryBuilder = QueryBuilders.matchPhraseQuery("name", "国家石油天然气管网集团有限公司");
 
+        // MatchAllQueryBuilder matchAllQueryBuilder = QueryBuilders.matchAllQuery();
         // ExistsQueryBuilder existsQueryBuilder = QueryBuilders.existsQuery("label.3bdc0616-441f-49a9-8d7f-a1231b57083a");
 
         /*BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
@@ -236,13 +236,15 @@ class ElasticsearchclientApplicationTests {
         for (SearchHit searchHit : searchHits) {
             // System.out.println(searchHit.getSourceAsMap());
 
+            BigDecimal zczj = new BigDecimal(String.valueOf(searchHit.getSourceAsMap().get("zczj")));
+
             Corporation corporation = new Corporation(
                     String.valueOf(searchHit.getId()),
                     String.valueOf(searchHit.getSourceAsMap().get("name")),
                     String.valueOf(searchHit.getSourceAsMap().get("tyshxydm")),
                     String.valueOf(searchHit.getSourceAsMap().get("fddbrxm")),
                     String.valueOf(searchHit.getSourceAsMap().get("zcdz")),
-                    String.valueOf(searchHit.getSourceAsMap().get("zczj"))
+                    zczj.toString()
             );
 
             if (corporation.getId() == "null") {
