@@ -38,13 +38,13 @@ public class CorporationService {
     public CorporationDTO listCorporationByName(String name, Integer pageNum, Integer pageSize) throws IOException {
 
         SearchRequest searchRequest = new SearchRequest("rkzhk.label");
-        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder().trackTotalHits(true);
 
         MatchPhraseQueryBuilder matchPhraseQueryBuilder = QueryBuilders.matchPhraseQuery("name", name);
         sourceBuilder.query(matchPhraseQueryBuilder);
         sourceBuilder.timeout(new TimeValue(60, TimeUnit.SECONDS));
         // sourceBuilder.fetchSource(new String[]{"id", "name", "fddbrxm", "zczj", "kyrq"}, new String[]{});
-        sourceBuilder.from(pageNum);
+        sourceBuilder.from(pageNum * pageSize);
         sourceBuilder.size(pageSize);
         sourceBuilder.sort("zczj", SortOrder.DESC);
 
@@ -58,7 +58,7 @@ public class CorporationService {
         TotalHits totalHits = hits.getTotalHits();
         Long totalNum = totalHits.value;
         // 匹配到的总页数
-        Integer totalPage = (int)(Math.ceil(totalNum * 1.0 / pageSize));
+        Integer totalPage = (int) (Math.ceil(totalNum * 1.0 / pageSize));
 
         List<Corporation> corporationList = new ArrayList<>();
         for (SearchHit searchHit : searchHits) {
@@ -104,7 +104,7 @@ public class CorporationService {
     public CorporationDTO listCorporationByLabelId(ArrayList<String> labelIdList, Integer pageNum, Integer pageSize) throws IOException {
 
         SearchRequest searchRequest = new SearchRequest("rkzhk.label");
-        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder().trackTotalHits(true);
 
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 
@@ -116,7 +116,7 @@ public class CorporationService {
         sourceBuilder.query(boolQueryBuilder);
         sourceBuilder.timeout(new TimeValue(60, TimeUnit.SECONDS));
         // sourceBuilder.fetchSource(new String[]{"id", "name", "fddbrxm", "zczj", "kyrq"}, new String[]{});
-        sourceBuilder.from(pageNum);
+        sourceBuilder.from(pageNum * pageSize);
         sourceBuilder.size(pageSize);
         sourceBuilder.sort("zczj", SortOrder.DESC);
 
@@ -130,7 +130,7 @@ public class CorporationService {
         TotalHits totalHits = hits.getTotalHits();
         Long totalNum = totalHits.value;
         // 匹配到的总页数
-        Integer totalPage = (int)(Math.ceil(totalNum * 1.0 / pageSize));
+        Integer totalPage = (int) (Math.ceil(totalNum * 1.0 / pageSize));
 
         List<Corporation> corporationList = new ArrayList<>();
         for (SearchHit searchHit : searchHits) {
@@ -181,13 +181,13 @@ public class CorporationService {
         }
 
         SearchRequest searchRequest = new SearchRequest("rkzhk.label");
-        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder().trackTotalHits(true);
 
         MatchPhraseQueryBuilder matchPhraseQueryBuilder = QueryBuilders.matchPhraseQuery("name", name);
         sourceBuilder.query(matchPhraseQueryBuilder);
         sourceBuilder.timeout(new TimeValue(60, TimeUnit.SECONDS));
         // sourceBuilder.fetchSource(new String[]{"id", "name", "fddbrxm", "zczj", "kyrq"}, new String[]{});
-        sourceBuilder.from(pageNum);
+        sourceBuilder.from(pageNum * pageSize);
         sourceBuilder.size(pageSize);
         sourceBuilder.sort("zczj", SortOrder.DESC);
 
@@ -201,7 +201,7 @@ public class CorporationService {
         TotalHits totalHits = hits.getTotalHits();
         Long totalNum = totalHits.value;
         // 匹配到的总页数
-        Integer totalPage = (int)(Math.ceil(totalNum * 1.0 / pageSize));
+        Integer totalPage = (int) (Math.ceil(totalNum * 1.0 / pageSize));
 
         List<Corporation> corporationList = new ArrayList<>();
         for (SearchHit searchHit : searchHits) {
@@ -238,14 +238,14 @@ public class CorporationService {
 
             // 脱敏处理
             if (level == 1) {
-                if(corporation.getZcdz().length() >= 6){
+                if (corporation.getZcdz().length() >= 6) {
                     corporation.setZcdz(corporation.getZcdz().substring(0, 6) + "****");
                 }
-                if(corporation.getFddbrxm().length() >= 1){
+                if (corporation.getFddbrxm().length() >= 1) {
                     corporation.setFddbrxm(corporation.getFddbrxm().substring(0, 1) + "**");
                 }
             } else if (level == 2) {
-                if(corporation.getFddbrxm().length() >= 1){
+                if (corporation.getFddbrxm().length() >= 1) {
                     corporation.setFddbrxm(corporation.getFddbrxm().substring(0, 1) + "**");
                 }
             }

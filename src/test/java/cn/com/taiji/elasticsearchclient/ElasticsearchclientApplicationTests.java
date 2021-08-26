@@ -204,18 +204,18 @@ class ElasticsearchclientApplicationTests {
     void testSearch1() throws IOException {
 
         SearchRequest searchRequest = new SearchRequest("rkzhk.label");
-        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder().trackTotalHits(true);
 
-        MatchPhraseQueryBuilder matchPhraseQueryBuilder = QueryBuilders.matchPhraseQuery("name", "国家石油天然气管网集团有限公司");
+        // MatchPhraseQueryBuilder matchPhraseQueryBuilder = QueryBuilders.matchPhraseQuery("name", "国家石油天然气管网集团有限公司");
 
-        // MatchAllQueryBuilder matchAllQueryBuilder = QueryBuilders.matchAllQuery();
+        MatchAllQueryBuilder matchAllQueryBuilder = QueryBuilders.matchAllQuery();
         // ExistsQueryBuilder existsQueryBuilder = QueryBuilders.existsQuery("label.3bdc0616-441f-49a9-8d7f-a1231b57083a");
 
         /*BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
         boolQueryBuilder.should(QueryBuilders.existsQuery("label.164b3c82-a534-4116-8884-464dd0cde4a3"))
                 .must(QueryBuilders.matchPhraseQuery("name", "北京路平发运输户"));*/
 
-        sourceBuilder.query(matchPhraseQueryBuilder);
+        sourceBuilder.query(matchAllQueryBuilder);
         sourceBuilder.sort("zczj", SortOrder.DESC);
         sourceBuilder.from(0);
         sourceBuilder.size(10);
@@ -282,7 +282,7 @@ class ElasticsearchclientApplicationTests {
         searchRequest.scroll(scroll);
 
         // 构建搜索源对象
-        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder().trackTotalHits(true);
 
         // 搜索方式，使用QueryBuilders工具来实现
 
