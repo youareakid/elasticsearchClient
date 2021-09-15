@@ -2,6 +2,7 @@ package cn.com.taiji.elasticsearchclient.service;
 
 import cn.com.taiji.elasticsearchclient.domain.PopulationMatchOneLabel;
 import cn.com.taiji.elasticsearchclient.dto.PopulationDTO;
+import cn.com.taiji.elasticsearchclient.service.Impl.PopulationServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ import java.util.List;
 public class PopulationServiceTest {
 
     @Autowired
-    PopulationService populationService;
+    PopulationServiceImpl populationService;
 
     @Test
     void testQueryTotalPopulation() throws IOException {

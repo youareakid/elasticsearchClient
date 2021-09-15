@@ -1,7 +1,7 @@
 package cn.com.taiji.elasticsearchclient.service;
 
-import cn.com.taiji.elasticsearchclient.domain.Corporation;
 import cn.com.taiji.elasticsearchclient.dto.CorporationDTO;
+import cn.com.taiji.elasticsearchclient.service.Impl.CorporationServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,14 +9,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @SpringBootTest
 public class CorporationServiceTest {
 
     @Autowired
-    CorporationService corporationService;
+    CorporationServiceImpl corporationService;
 
     @Test
     void testListCorporationByName() throws IOException {

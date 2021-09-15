@@ -1,5 +1,6 @@
 package cn.com.taiji.elasticsearchclient.service;
 
+import cn.com.taiji.elasticsearchclient.service.Impl.ImportDataFromMysqlServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,7 @@ import java.io.IOException;
 public class ImportDataFromMysqlServiceTest {
 
     @Autowired
-    ImportDataFromMysqlService importDataFromMysqlService;
+    ImportDataFromMysqlServiceImpl importDataFromMysqlService;
 
     @Test
     void testAddOrUpdateDocument() throws IOException {

@@ -2,7 +2,7 @@ package cn.com.taiji.elasticsearchclient.web;
 
 import cn.com.taiji.elasticsearchclient.dto.PopulationDTO;
 import cn.com.taiji.elasticsearchclient.dto.ResultDTO;
-import cn.com.taiji.elasticsearchclient.service.PopulationService;
+import cn.com.taiji.elasticsearchclient.service.Impl.PopulationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 public class PopulationController {
 
     @Autowired
-    PopulationService populationService;
+    PopulationServiceImpl populationService;
 
     private String maleLabelId = "9f8918d1-d2cf-4e89-9458-1acd8140ab6e";
     private String femaleLabelId = "749fe8f9-bd5b-4b7f-8dbe-041ccd74462f";
