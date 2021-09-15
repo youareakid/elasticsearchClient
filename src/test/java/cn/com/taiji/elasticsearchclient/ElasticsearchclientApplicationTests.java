@@ -37,15 +37,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.apache.commons.lang.RandomStringUtils;
+import org.springframework.jdbc.core.JdbcTemplate;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-/**
- * ElasticSearch 客户端API
- */
 @Slf4j
 @SpringBootTest
 class ElasticsearchclientApplicationTests {
@@ -54,10 +57,33 @@ class ElasticsearchclientApplicationTests {
     @Qualifier("restHighLevelClient")
     private RestHighLevelClient client;
 
+    @Autowired
+    DataSource dataSource;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     // 测试client连接是否正常
     @Test
-    void contextLoads() {
+    void clientContextLoads() {
         System.out.println(client);
+    }
+
+    @Test
+    void dataSourceContextLoads() throws SQLException {
+        //是否获取到数据源
+        System.out.println(dataSource.getClass());
+        //获取一个连接
+        Connection connection = dataSource.getConnection();
+        System.out.println(connection);
+        connection.close();
+    }
+
+    @Test
+    void testQuery() {
+        String sql = "select * from rkzhk.jbxxb_tmp";
+        List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
+        System.out.println(list);
     }
 
     // 判断索引是否存在
@@ -73,17 +99,17 @@ class ElasticsearchclientApplicationTests {
     @Test
     void testCreateIndex() throws IOException {
         // 1.创建索引的请求
-        CreateIndexRequest request = new CreateIndexRequest("test_index1");
+        CreateIndexRequest request = new CreateIndexRequest("rkzhk.jbxxb_tmp");
 
         // 2.执行创建的请求 indicesclient,请求后获得响应
         CreateIndexResponse createIndexResponse = client.indices().create(request, RequestOptions.DEFAULT);
-        System.out.println(createIndexResponse);
+        System.out.println(createIndexResponse.isAcknowledged());
     }
 
     // 删除索引
     @Test
     void testDeleteIndex() throws IOException {
-        DeleteIndexRequest request = new DeleteIndexRequest("rkzhk.label");
+        DeleteIndexRequest request = new DeleteIndexRequest("rkzhk.jbxxb_tmp");
         AcknowledgedResponse delete = client.indices().delete(request, RequestOptions.DEFAULT);
 
         System.out.println(delete.isAcknowledged());
@@ -107,7 +133,14 @@ class ElasticsearchclientApplicationTests {
     @Test
     void testCountDocument() throws IOException {
         SearchRequest searchRequest = new SearchRequest("runoob.collect1");
+        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder().trackTotalHits(true);
 
+        MatchAllQueryBuilder matchAllQueryBuilder = QueryBuilders.matchAllQuery();
+
+        sourceBuilder.query(matchAllQueryBuilder);
+        sourceBuilder.timeout(new TimeValue(60, TimeUnit.SECONDS));
+
+        searchRequest.source(sourceBuilder);
         SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
         TotalHits totalHits = searchResponse.getHits().getTotalHits();
 
